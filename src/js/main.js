@@ -178,3 +178,160 @@ keysContainerElement.addEventListener('mousedown', (event) => {
                       : printSymbols(id); // в противном случае обычная клавиша
   showAnimation(id); // показываем анимацию клавиши
 });
+
+// Добавляем обработчик события "mouseup" для контейнера кнопок
+keysContainerElement.addEventListener('mouseup', (event) => {
+  // Получаем все кнопки
+  const buttons = document.querySelectorAll('.key');
+  // Получаем id нажатой кнопки
+  const { id } = event.target;
+  // Проходимся по всем кнопкам и переключаем класс "pressed" для нажатой кнопки
+  buttons.forEach((btn) => {
+    if (btn.id === id) {
+      btn.classList.toggle('pressed');
+    }
+  });
+});
+
+// Функция для ввода символов из нажатой кнопки
+const printSymbols = (id) => {
+  // Получаем все кнопки
+  const buttons = document.querySelectorAll('.key');
+  // Получаем поле ввода текста
+  const textArea = document.querySelector('.input-block');
+  // Проходимся по всем кнопкам и если id соответствует переданному, вводим символы в поле ввода
+  buttons.forEach((btn) => {
+    if (btn.id === id) {
+      event.preventDefault();
+      textArea.focus();
+      textArea.setRangeText(btn.innerHTML, textArea.selectionStart, textArea.selectionEnd, 'end');
+    }
+  });
+};
+
+const isSpecial = (code) => codeName.includes(code);
+
+const handleTab = () => {
+// Отменяем стандартное действие браузера
+  event.preventDefault();
+  // Находим поле ввода
+  const textArea = document.querySelector('.input-block');
+  // Вставляем символы табуляции
+  textArea.setRangeText(' ', textArea.selectionStart, textArea.selectionEnd, 'end');
+};
+
+const handleSpace = () => {
+// Отменяем стандартное действие браузера
+  event.preventDefault();
+  // Находим поле ввода
+  const textArea = document.querySelector('.input-block');
+  // Вставляем пробел
+  textArea.setRangeText(' ', textArea.selectionStart, textArea.selectionEnd, 'end');
+};
+
+const handleEnter = () => {
+// Отменяем стандартное действие браузера
+  event.preventDefault();
+  // Находим поле ввода
+  const textArea = document.querySelector('.input-block');
+  // Вставляем символ переноса строки
+  textArea.setRangeText('\n', textArea.selectionStart, textArea.selectionEnd, 'end');
+};
+
+const handleBackspace = () => {
+// Отменяем стандартное действие браузера
+  event.preventDefault();
+  // Находим поле ввода
+  const textArea = document.querySelector('.input-block');
+  // Проверяем, есть ли выделенный текст
+  if (textArea.selectionStart && textArea.selectionStart === textArea.selectionEnd) {
+    // Если нет, удаляем предыдущий символ
+    textArea.setRangeText('', textArea.selectionStart - 1, textArea.selectionEnd);
+  } else if (textArea.selectionStart !== textArea.selectionEnd) {
+    // Если есть, удаляем выделенный текст
+    textArea.setRangeText('', textArea.selectionStart, textArea.selectionEnd);
+  }
+};
+
+const handleDelete = () => {
+// Отменяем стандартное действие браузера
+  event.preventDefault();
+  // Находим поле ввода
+  const textArea = document.querySelector('.input-block');
+  // Удаляем следующий символ
+  textArea.setRangeText('', textArea.selectionStart, textArea.selectionEnd + 1);
+};
+
+const handleCapsLock = () => {
+// Находим все кнопки с символами
+  const buttons = document.querySelectorAll('.key');
+  buttons.forEach((btn) => {
+    // Проверяем, является ли символ буквой
+    if (btn.innerHTML.length === 1) {
+      // Если да, меняем регистр символа
+      btn.innerHTML = !capsLock ? btn.innerHTML.toUpperCase() : btn.innerHTML.toLowerCase();
+    }
+  });
+  // Инвертируем значение переменной capsLock
+  capsLock = !capsLock;
+};
+
+const showAnimation = (code) => {
+// Находим все кнопки
+  const buttons = document.querySelectorAll('.key');
+  buttons.forEach((btn) => {
+    // Если ID кнопки соответствует коду клавиши, переключаем класс pressed
+    if (btn.id === code) {
+      btn.classList.toggle('pressed');
+    }
+  });
+};
+
+const changeLanguage = () => {
+  const rows = document.querySelectorAll('.keyboard-line');
+
+  // Удаляем старую клавиатуру
+  rows.forEach((row) => {
+    row.remove();
+  });
+
+  // Создаем новую клавиатуру в зависимости от выбранного языка
+  if (localStorage.getItem('lang') === 'keyboardKeysRussian') {
+    createButtons(keyboardKeysEnglish);
+    localStorage.setItem('lang', 'en');
+  } else {
+    createButtons(keyboardKeysRussian);
+    localStorage.setItem('lang', 'keyboardKeysRussian');
+  }
+
+  // Сбрасываем caps lock
+  if (capsLock) {
+    capsLock = !capsLock;
+    handleCapsLock();
+  }
+
+  // Сбрасываем shift и создаем новую клавиатуру с учетом текущего языка и состояния shift
+  if (shift) {
+    shift = !shift;
+    replaceKeyboard(localStorage.getItem('lang') === 'en' ? keyboardKeysEnglishShift : keyboardKeysRussianShift);
+  }
+};
+
+const replaceKeyboard = (arr) => {
+  const rows = document.querySelectorAll('.keyboard-line');
+
+  // Удаляем старую клавиатуру
+  rows.forEach((row) => {
+    row.remove();
+  });
+
+  // Создаем новую клавиатуру с учетом текущего языка и состояния shift
+  if (!shift) {
+    createButtons(arr);
+  } else {
+    createButtons(localStorage.getItem('lang') === 'en' ? keyboardKeysEnglish : keyboardKeysRussian);
+  }
+
+  // Инвертируем состояние shift
+  shift = !shift;
+};
