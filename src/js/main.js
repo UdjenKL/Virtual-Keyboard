@@ -2,8 +2,8 @@
 let selectedLanguage = 'en';
 
 // Переменные, отслеживающие состояния клавиш Caps Lock и Shift
-const capsLock = false;
-const shift = false;
+let capsLock = false;
+let shift = false;
 
 // Клавиатура с раскладкой английского языка
 const keyboardKeysEnglish = [
@@ -11,7 +11,7 @@ const keyboardKeysEnglish = [
   ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'Del'],
   ['CapsLk', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
   ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '&#9650', 'Shift'],
-  ['Ctrl', 'option', 'cmd', ' ', 'cmd', 'option', '&#9668', '&#9660', '&#9658'],
+  ['Ctrl', 'opt', 'cmd', ' ', 'cmd', 'opt', '&#9668', '&#9660', '&#9658'],
 ];
 
 // Клавиатура с раскладкой русского языка
@@ -20,7 +20,7 @@ const keyboardKeysRussian = [
   ['Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del'],
   ['CapsLk', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter'],
   ['Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '&#9650', 'Shift'],
-  ['Ctrl', 'option', 'cmd', ' ', 'cmd', 'option', '&#9668', '&#9660', '&#9658'],
+  ['Ctrl', 'opt', 'cmd', ' ', 'cmd', 'opt', '&#9668', '&#9660', '&#9658'],
 ];
 
 // Массив клавиш русской раскладки с зажатой клавишей Shift
@@ -29,7 +29,7 @@ const keyboardKeysRussianShift = [
   ['Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '/', 'Del'],
   ['CapsLk', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter'],
   ['Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '&#9650', 'Shift'],
-  ['Ctrl', 'option', 'cmd', ' ', 'cmd', 'option', '&#9668', '&#9660', '&#9658'],
+  ['Ctrl', 'opt', 'cmd', ' ', 'cmd', 'opt', '&#9668', '&#9660', '&#9658'],
 ];
 
 // Массив клавиш английской раскладки с зажатой клавишей Shift
@@ -38,7 +38,7 @@ const keyboardKeysEnglishShift = [
   ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'Del'],
   ['CapsLk', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Enter'],
   ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '&#9650', 'Shift'],
-  ['Ctrl', 'option', 'cmd', ' ', 'cmd', 'option', '&#9668', '&#9660', '&#9658'],
+  ['Ctrl', 'opt', 'cmd', ' ', 'cmd', 'opt', '&#9668', '&#9660', '&#9658'],
 ];
 
 // Коды клавиш
@@ -83,7 +83,7 @@ const createButtons = (arr) => {
   // Этот элемент будет содержать клавиши текущей строки.
   arr.forEach((rowArr) => {
     const row = document.createElement('div');
-    row.className = 'keyboard__row';
+    row.className = 'keyboard-line';
     keysContainerElement.appendChild(row);
     rowArr.forEach((buttonText) => {
       const button = document.createElement('div');
@@ -97,13 +97,13 @@ const createButtons = (arr) => {
 
 // Проверяем наличие значения в localStorage
 localStorage.getItem('lang') !== null
-  // Если значение есть, проверяем, язык какой клавиатуры нужен
+// Если значение есть, проверяем, язык какой клавиатуры нужен
   ? localStorage.getItem('lang') === 'keyboardKeysRussian'
-    // Если нужна русская клавиатура, создаем кнопки с русскими символами
+  // Если нужна русская клавиатура, создаем кнопки с русскими символами
     ? createButtons(keyboardKeysRussian)
-    // Если нужна английская клавиатура, создаем кнопки с английскими символами
+  // Если нужна английская клавиатура, создаем кнопки с английскими символами
     : createButtons(keyboardKeysEnglish)
-  // Если значение отсутствует, устанавливаем язык "en" и создаем кнопки с английскими символами
+    // Если значение отсутствует, устанавливаем язык "en" и создаем кнопки с английскими символами
   : (localStorage.setItem('lang', 'en'), createButtons(keyboardKeysEnglish));
 
 // Обрабатываем нажатие клавиш
@@ -114,22 +114,22 @@ document.addEventListener('keydown', (event) => {
   // Обработка нажатия клавиши "Tab"
   code === 'Tab'
     ? handleTab()
-    // Обработка нажатия клавиши "CapsLock"
+  // Обработка нажатия клавиши "CapsLock"
     : code === 'CapsLock'
       ? (handleCapsLock(), btn.classList.toggle('pressed'))
-      // Обработка нажатия клавиш-шифтов
+    // Обработка нажатия клавиш-шифтов
       : code === 'ShiftLeft' || code === 'ShiftRight'
         ? replaceKeyboard(localStorage.getItem('lang') === 'en' ? keyboardKeysEnglishShift : keyboardKeysRussianShift)
-        // Обработка нажатия клавиш "AltLeft" и "AltRight"
+      // Обработка нажатия клавиш "AltLeft" и "AltRight"
         : code === 'AltLeft' || code === 'AltRight'
           ? event.preventDefault()
-          // Обработка нажатия сочетания клавиш "Ctrl + Alt" или "Alt + Ctrl"
+        // Обработка нажатия сочетания клавиш "Ctrl + Alt" или "Alt + Ctrl"
           : (event.ctrlKey && event.altKey) || (event.altKey && event.ctrlKey)
             ? changeLanguage()
-            // Проверка, является ли клавиша специальной
+          // Проверка, является ли клавиша специальной
             : isSpecial(code)
               ? textArea.focus()
-              // Вывод символа на экран
+            // Вывод символа на экран
               : printSymbols(code);
 
   // Отображение анимации
@@ -138,7 +138,7 @@ document.addEventListener('keydown', (event) => {
 
 // Обработчик события на отпускание клавиши
 document.addEventListener('keyup', (event) => {
-  // Получаем все кнопки клавиатуры
+// Получаем все кнопки клавиатуры
   const buttons = document.querySelectorAll('.key');
   const { code } = event;
   // Если отпущена клавиша Shift, возвращаем исходную клавиатуру
