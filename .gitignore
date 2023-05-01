@@ -1,0 +1,11 @@
+GIT IGNORE
+
+# Dependency directory
+node_modules
+
+# Игнорировать файлы WebStorm
+.idea/
+
+# Игнорировать временные файлы macOS
+.DS_Store
+
